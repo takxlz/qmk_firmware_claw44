@@ -221,7 +221,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
         KC_C_ENT     , KC_CS_A     , KC_GS_S     , KC_A_D      , KC_C_F      , KC_G_G      , XXXXXXX, XXXXXXX, KC_G_H       , KC_C_J      , KC_A_K      , KC_GS_L     , KC_CS_SCLN  , KC_C_MINS   ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_S_BS      , KC_Z        , KC_X        , KC_C        , KC_V        , KC_B        , XXXXXXX, XXXXXXX, KC_N         , KC_M        , KC_COMM     , KC_DOT      , KC_SLSH     , KC_S_ALT   ,
+        KC_S_BS      , KC_Z        , KC_X        , KC_C        , KC_V        , KC_B        , XXXXXXX, XXXXXXX, KC_N         , KC_M        , KC_COMM     , KC_DOT      , KC_SLSH     , KC_S_ALT    ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
                                      TD(TD_F10)  , KC_S_EN     , KC_1_SPC    , KC_A_TAB    ,                   KC_BSPC      , KC_2_ENT    , KC_S_JP     , TD(TD_F2)
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
@@ -396,6 +396,18 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return TAPPING_TERM_SHORT;
         default:
             return TAPPING_TERM;
+    }
+}
+
+// キーごとにRETRO_TAPPINGを調整する
+bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        // 以下のキーのみRETRO_TAPPINGを無効化する
+        case KC_1_SPC:
+        case KC_2_ENT:
+            return false;
+        default:
+            return true;
     }
 }
 
