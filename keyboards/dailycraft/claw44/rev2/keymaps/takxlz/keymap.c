@@ -32,7 +32,7 @@ enum {
     TD_EN = 0,
     TD_JP,
     TD_F10,
-    TD_F2,
+    TD_RTAB,
 };
 
 // TD種別定義
@@ -142,8 +142,8 @@ void td_f10_reset(tap_dance_state_t *state, void *user_data) {
     td_state = 0;
 }
 
-// TD_F2
-void td_f2_finished(tap_dance_state_t *state, void *user_data) {
+// TD_RTAB
+void td_rtab_finished(tap_dance_state_t *state, void *user_data) {
     td_state = cur_dance(state);
     if (td_state == SINGLE_HOLD) {
         if (detected_host_os() == OS_WINDOWS) {
@@ -152,10 +152,10 @@ void td_f2_finished(tap_dance_state_t *state, void *user_data) {
             register_code(KC_LCTL);
         }
     } else {
-        tap_code(KC_F2);
+        tap_code(KC_TAB);
     }
 }
-void td_f2_reset(tap_dance_state_t *state, void *user_data) {
+void td_rtab_reset(tap_dance_state_t *state, void *user_data) {
     if (td_state == SINGLE_HOLD) {
         if (detected_host_os() == OS_WINDOWS) {
             unregister_code(KC_LGUI);
@@ -171,17 +171,18 @@ tap_dance_action_t tap_dance_actions[] = {
     // [TD_EN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_en_finished, td_en_reset),
     // [TD_JP] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_jp_finished, td_jp_reset),
     [TD_F10] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_f10_finished, td_f10_reset),
-    [TD_F2] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_f2_finished, td_f2_reset),
+    [TD_RTAB] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_rtab_finished, td_rtab_reset),
 };
 #endif
 
 /************************************************************ キー割り当て ************************************************************/
 // layer
 #define KC_1_SPC LT(_1, KC_SPC)
+#define KC_2_SPC LT(_2, KC_SPC)
 #define KC_2_ENT LT(_2, KC_ENT)
 
 // lctl_t
-#define KC_C_ENT LCTL_T(KC_ENT)
+#define KC_C_TAB LCTL_T(KC_TAB)
 #define KC_C_MINS LCTL_T(KC_MINS)
 #define KC_C_F LCTL_T(KC_F)
 #define KC_C_J LCTL_T(KC_J)
@@ -196,14 +197,12 @@ tap_dance_action_t tap_dance_actions[] = {
 #define KC_S_ENT LSFT_T(KC_ENT)
 #define KC_S_EN LSFT_T(KC_LNG2)
 #define KC_S_JP LSFT_T(KC_LNG1)
-#define KC_S_BS LSFT_T(KC_BSPC)
 #define KC_S_DEL LSFT_T(KC_DEL)
-#define KC_S_ALT LSFT_T(KC_LALT)
 
 // lalt_t
 #define KC_A_D LALT_T(KC_D)
 #define KC_A_K LALT_T(KC_K)
-#define KC_A_TAB LALT_T(KC_TAB)
+#define KC_A_BS LALT_T(KC_BSPC)
 
 // cmd+shift
 #define KC_GS_S SCMD_T(KC_S)
@@ -211,7 +210,7 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // ctrl+shift
 #define KC_CS_A MT(MOD_LCTL | MOD_LSFT, KC_A)
-#define KC_CS_SCLN MT(MOD_LCTL | MOD_LSFT, KC_SCLN)
+#define KC_CS_QUOT MT(MOD_LCTL | MOD_LSFT, KC_QUOT)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -219,35 +218,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // .-----------------------------------------------------------------------------------.                  .-----------------------------------------------------------------------------------.
         KC_G_ESC     , KC_Q        , KC_W        , KC_E        , KC_R        , KC_T        ,                   KC_Y         , KC_U        , KC_I        , KC_O        , KC_P        , KC_G_LBRC   ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_C_ENT     , KC_CS_A     , KC_GS_S     , KC_A_D      , KC_C_F      , KC_G_G      , XXXXXXX, XXXXXXX, KC_G_H       , KC_C_J      , KC_A_K      , KC_GS_L     , KC_CS_SCLN  , KC_C_MINS   ,
+        KC_C_TAB     , KC_CS_A     , KC_GS_S     , KC_A_D      , KC_C_F      , KC_G_G      , XXXXXXX, XXXXXXX, KC_G_H       , KC_C_J      , KC_A_K      , KC_GS_L     , KC_CS_QUOT  , KC_C_MINS   ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_S_BS      , KC_Z        , KC_X        , KC_C        , KC_V        , KC_B        , XXXXXXX, XXXXXXX, KC_N         , KC_M        , KC_COMM     , KC_DOT      , KC_SLSH     , KC_S_ALT    ,
+        KC_S_ENT     , KC_Z        , KC_X        , KC_C        , KC_V        , KC_B        , XXXXXXX, XXXXXXX, KC_N         , KC_M        , KC_COMM     , KC_DOT      , KC_SLSH     , KC_S_ENT    ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-                                     TD(TD_F10)  , KC_S_EN     , KC_1_SPC    , KC_A_TAB    ,                   KC_BSPC      , KC_2_ENT    , KC_S_JP     , TD(TD_F2)
+                                     TD(TD_F10)  , KC_S_EN     , KC_1_SPC    , KC_A_BS     ,                   KC_BSPC      , KC_2_ENT    , KC_S_JP     , TD(TD_RTAB)
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
    ),
 
    [_1] = LAYOUT(
     // .-----------------------------------------------------------------------------------.                  .-----------------------------------------------------------------------------------.
-        _______      , KC_F1       , KC_F2       , KC_F3       , KC_F4       , KC_F5       ,                   KC_SLSH      , S(KC_MINS)  , S(KC_QUOT)  , S(KC_SCLN)  , S(KC_5)     , KC_PGUP     ,
+        KC_PGUP      , KC_F1       , KC_F2       , KC_F3       , KC_F4       , KC_F5       ,                   KC_SLSH      , S(KC_MINS)  , S(KC_QUOT)  , S(KC_SCLN)  , S(KC_5)     , KC_PGDN     ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        S(KC_INT1)   , KC_1        , KC_2        , KC_3        , KC_4        , KC_5        , XXXXXXX, XXXXXXX, KC_6         , KC_7        , KC_8        , KC_9        , KC_0        , _______     ,
+        _______      , KC_1        , KC_2        , KC_3        , KC_4        , KC_5        , XXXXXXX, XXXXXXX, KC_6         , KC_7        , KC_8        , KC_9        , KC_0        , _______     ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_S_DEL     , KC_F6       , KC_F7       , KC_F8       , KC_F9       , KC_F10      , XXXXXXX, XXXXXXX, _______      , _______      , _______    , _______     , S(KC_4)     , KC_PGDN     ,
+        _______      , KC_F6       , KC_F7       , KC_F8       , KC_F9       , KC_F10      , XXXXXXX, XXXXXXX, _______      , _______      , _______    , _______     , S(KC_4)     , S(KC_INT1)  ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-                                     _______     , _______     , _______     , _______     ,                   _______       , _______     , _______    , _______
+                                     _______     , _______     , _______     , KC_DEL      ,                   _______      , _______     , _______     , _______
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
    ),
 
    [_2] = LAYOUT(
     // .-----------------------------------------------------------------------------------.                  .-----------------------------------------------------------------------------------.
-        _______      , S(KC_SLSH)  , S(KC_1)     , S(KC_6)     , S(KC_INT3)  , KC_INT3     ,                   KC_SLSH      , S(KC_MINS)  , S(KC_QUOT)  , S(KC_SCLN)  , S(KC_5)     , KC_HOME     ,
+        KC_HOME      , S(KC_SLSH)  , S(KC_1)     , S(KC_6)     , S(KC_INT3)  , KC_INT3     ,                   KC_SLSH      , S(KC_MINS)  , S(KC_QUOT)  , S(KC_SCLN)  , S(KC_5)     , KC_END      ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_EQL       , S(KC_3)     , S(KC_LBRC)  , S(KC_2)     , S(KC_7)     , S(KC_EQL)   , XXXXXXX, XXXXXXX, KC_LEFT      , KC_DOWN     , KC_UP       , KC_RGHT     , KC_QUOT     , S(KC_INT1)  ,
+        KC_EQL       , S(KC_3)     , S(KC_LBRC)  , S(KC_2)     , S(KC_7)     , S(KC_EQL)   , XXXXXXX, XXXXXXX, KC_LEFT      , KC_DOWN     , KC_UP       , KC_RGHT     , KC_SCLN     , S(KC_INT1)  ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_S_DEL     , KC_LBRC     , S(KC_COMM)  , KC_RBRC     , S(KC_8)     , S(KC_RBRC)  , XXXXXXX, XXXXXXX, S(KC_NUHS)   , S(KC_9)     , KC_NUHS     , S(KC_DOT)   , S(KC_4)     , KC_END      ,
+        _______      , KC_LBRC     , S(KC_COMM)  , KC_RBRC     , S(KC_8)     , S(KC_RBRC)  , XXXXXXX, XXXXXXX, S(KC_NUHS)   , S(KC_9)     , KC_NUHS     , S(KC_DOT)   , S(KC_4)     , _______     ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-                                     _______     , _______     , _______     , _______     ,                   _______      , _______     , _______     , _______
+                                     _______     , _______     , _______     , _______     ,                   KC_DEL      , _______     , _______     , _______
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
    ),
 
@@ -376,16 +375,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // キーごとにTAPPING_TERMを調整する
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        // レイヤー0：左手中段
-        case KC_C_ENT:
+        // レイヤー0：中段
+        case KC_S_ENT:
         case KC_CS_A:
         case KC_GS_S:
         case KC_A_D:
         case KC_C_F:
         case KC_G_G:
-        // レイヤー0：右手中段
         case KC_C_MINS:
-        case KC_CS_SCLN:
+        case KC_CS_QUOT:
         case KC_GS_L:
         case KC_A_K:
         case KC_C_J:
@@ -404,6 +402,7 @@ bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         // 以下のキーのみRETRO_TAPPINGを無効化する
         case KC_1_SPC:
+        case KC_2_SPC:
         case KC_2_ENT:
             return false;
         default:
