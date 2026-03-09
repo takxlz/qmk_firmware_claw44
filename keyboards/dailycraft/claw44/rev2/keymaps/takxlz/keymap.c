@@ -32,7 +32,7 @@ enum {
     TD_EN = 0,
     TD_JP,
     TD_F10,
-    TD_RTAB,
+    TD_HSPC,
 };
 
 // TD種別定義
@@ -142,8 +142,8 @@ void td_f10_reset(tap_dance_state_t *state, void *user_data) {
     td_state = 0;
 }
 
-// TD_RTAB
-void td_rtab_finished(tap_dance_state_t *state, void *user_data) {
+// TD_HSPC
+void td_hspc_finished(tap_dance_state_t *state, void *user_data) {
     td_state = cur_dance(state);
     if (td_state == SINGLE_HOLD) {
         if (detected_host_os() == OS_WINDOWS) {
@@ -152,10 +152,10 @@ void td_rtab_finished(tap_dance_state_t *state, void *user_data) {
             register_code(KC_LCTL);
         }
     } else {
-        tap_code(KC_TAB);
+        tap_code16(LSFT(KC_SPC));
     }
 }
-void td_rtab_reset(tap_dance_state_t *state, void *user_data) {
+void td_hspc_reset(tap_dance_state_t *state, void *user_data) {
     if (td_state == SINGLE_HOLD) {
         if (detected_host_os() == OS_WINDOWS) {
             unregister_code(KC_LGUI);
@@ -171,7 +171,7 @@ tap_dance_action_t tap_dance_actions[] = {
     // [TD_EN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_en_finished, td_en_reset),
     // [TD_JP] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_jp_finished, td_jp_reset),
     [TD_F10] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_f10_finished, td_f10_reset),
-    [TD_RTAB] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_rtab_finished, td_rtab_reset),
+    [TD_HSPC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, td_hspc_finished, td_hspc_reset),
 };
 #endif
 
@@ -185,11 +185,11 @@ tap_dance_action_t tap_dance_actions[] = {
 #define KC_C_TAB LCTL_T(KC_TAB)
 #define KC_C_MINS LCTL_T(KC_MINS)
 #define KC_C_F LCTL_T(KC_F)
-#define KC_C_J LCTL_T(KC_J)
+// #define KC_C_J LCTL_T(KC_J)
 
 // lgui_t
 #define KC_G_G LGUI_T(KC_G)
-#define KC_G_H LGUI_T(KC_H)
+// #define KC_G_H LGUI_T(KC_H)
 #define KC_G_ESC LGUI_T(KC_ESC)
 #define KC_G_LBRC LGUI_T(KC_LBRC)
 
@@ -201,16 +201,16 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // lalt_t
 #define KC_A_D LALT_T(KC_D)
-#define KC_A_K LALT_T(KC_K)
+// #define KC_A_K LALT_T(KC_K)
 #define KC_A_BS LALT_T(KC_BSPC)
 
 // cmd+shift
 #define KC_GS_S SCMD_T(KC_S)
-#define KC_GS_L SCMD_T(KC_L)
+// #define KC_GS_L SCMD_T(KC_L)
 
 // ctrl+shift
 #define KC_CS_A MT(MOD_LCTL | MOD_LSFT, KC_A)
-#define KC_CS_QUOT MT(MOD_LCTL | MOD_LSFT, KC_QUOT)
+// #define KC_CS_QUOT MT(MOD_LCTL | MOD_LSFT, KC_QUOT)
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -218,11 +218,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // .-----------------------------------------------------------------------------------.                  .-----------------------------------------------------------------------------------.
         KC_G_ESC     , KC_Q        , KC_W        , KC_E        , KC_R        , KC_T        ,                   KC_Y         , KC_U        , KC_I        , KC_O        , KC_P        , KC_G_LBRC   ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_C_TAB     , KC_CS_A     , KC_GS_S     , KC_A_D      , KC_C_F      , KC_G_G      , XXXXXXX, XXXXXXX, KC_G_H       , KC_C_J      , KC_A_K      , KC_GS_L     , KC_CS_QUOT  , KC_C_MINS   ,
+        KC_C_TAB     , KC_CS_A     , KC_GS_S     , KC_A_D      , KC_C_F      , KC_G_G      , XXXXXXX, XXXXXXX, KC_H         , KC_J        , KC_K        , KC_L        , KC_SCLN     , KC_C_MINS   ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
         KC_S_ENT     , KC_Z        , KC_X        , KC_C        , KC_V        , KC_B        , XXXXXXX, XXXXXXX, KC_N         , KC_M        , KC_COMM     , KC_DOT      , KC_SLSH     , KC_S_ENT    ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-                                     TD(TD_F10)  , KC_S_EN     , KC_1_SPC    , KC_A_BS     ,                   KC_BSPC      , KC_2_ENT    , KC_S_JP     , TD(TD_RTAB)
+                                     TD(TD_F10)  , KC_S_EN     , KC_1_SPC    , KC_A_BS     ,                   KC_BSPC      , KC_2_ENT    , KC_S_JP     , TD(TD_HSPC)
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
    ),
 
@@ -232,7 +232,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
         _______      , KC_1        , KC_2        , KC_3        , KC_4        , KC_5        , XXXXXXX, XXXXXXX, KC_6         , KC_7        , KC_8        , KC_9        , KC_0        , _______     ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        _______      , KC_F6       , KC_F7       , KC_F8       , KC_F9       , KC_F10      , XXXXXXX, XXXXXXX, _______      , _______      , _______    , _______     , S(KC_4)     , S(KC_INT1)  ,
+        _______      , KC_F6       , KC_F7       , KC_F8       , KC_F9       , KC_F10      , XXXXXXX, XXXXXXX, _______      , _______      , _______    , _______     , _______     , S(KC_INT1)  ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
                                      _______     , _______     , _______     , KC_DEL      ,                   _______      , _______     , _______     , _______
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
@@ -242,9 +242,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // .-----------------------------------------------------------------------------------.                  .-----------------------------------------------------------------------------------.
         KC_HOME      , S(KC_SLSH)  , S(KC_1)     , S(KC_6)     , S(KC_INT3)  , KC_INT3     ,                   KC_SLSH      , S(KC_MINS)  , S(KC_QUOT)  , S(KC_SCLN)  , S(KC_5)     , KC_END      ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_EQL       , S(KC_3)     , S(KC_LBRC)  , S(KC_2)     , S(KC_7)     , S(KC_EQL)   , XXXXXXX, XXXXXXX, KC_LEFT      , KC_DOWN     , KC_UP       , KC_RGHT     , KC_SCLN     , S(KC_INT1)  ,
+        KC_EQL       , S(KC_3)     , S(KC_LBRC)  , S(KC_2)     , S(KC_7)     , S(KC_EQL)   , XXXXXXX, XXXXXXX, KC_LEFT      , KC_DOWN     , KC_UP       , KC_RGHT     , KC_QUOT     , _______     ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        _______      , KC_LBRC     , S(KC_COMM)  , KC_RBRC     , S(KC_8)     , S(KC_RBRC)  , XXXXXXX, XXXXXXX, S(KC_NUHS)   , S(KC_9)     , KC_NUHS     , S(KC_DOT)   , S(KC_4)     , _______     ,
+        _______      , KC_LBRC     , S(KC_COMM)  , KC_RBRC     , S(KC_8)     , S(KC_RBRC)  , XXXXXXX, XXXXXXX, S(KC_NUHS)   , S(KC_9)     , KC_NUHS     , S(KC_DOT)   , S(KC_4)     , S(KC_INT1)  ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
                                      _______     , _______     , _______     , _______     ,                   KC_DEL      , _______     , _______     , _______
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
@@ -383,11 +383,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case KC_C_F:
         case KC_G_G:
         case KC_C_MINS:
-        case KC_CS_QUOT:
-        case KC_GS_L:
-        case KC_A_K:
-        case KC_C_J:
-        case KC_G_H:
+        // case KC_CS_QUOT:
+        // case KC_GS_L:
+        // case KC_A_K:
+        // case KC_C_J:
+        // case KC_G_H:
             return TAPPING_TERM_LONG;
         case KC_S_EN:
         case KC_S_JP:
