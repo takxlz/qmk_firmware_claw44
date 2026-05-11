@@ -182,7 +182,7 @@ tap_dance_action_t tap_dance_actions[] = {
 #define KC_2_ENT LT(_2, KC_ENT)
 
 // lctl_t
-#define KC_C_ENT LCTL_T(KC_ENT)
+#define KC_C_TAB LCTL_T(KC_TAB)
 #define KC_C_MINS LCTL_T(KC_MINS)
 #define KC_C_F LCTL_T(KC_F)
 // #define KC_C_J LCTL_T(KC_J)
@@ -190,11 +190,11 @@ tap_dance_action_t tap_dance_actions[] = {
 // lgui_t
 #define KC_G_G LGUI_T(KC_G)
 // #define KC_G_H LGUI_T(KC_H)
-#define KC_G_TAB LGUI_T(KC_TAB)
+#define KC_G_ESC LGUI_T(KC_ESC)
 #define KC_G_LBRC LGUI_T(KC_LBRC)
 
 // lsft_t
-#define KC_S_ESC LSFT_T(KC_ESC)
+#define KC_S_ENT LSFT_T(KC_ENT)
 #define KC_S_EN LSFT_T(KC_LNG2)
 #define KC_S_JP LSFT_T(KC_LNG1)
 #define KC_S_DEL LSFT_T(KC_DEL)
@@ -219,11 +219,11 @@ tap_dance_action_t tap_dance_actions[] = {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    [_0] = LAYOUT(
     // .-----------------------------------------------------------------------------------.                  .-----------------------------------------------------------------------------------.
-        KC_G_TAB     , KC_Q        , KC_W        , KC_E        , KC_R        , KC_T        ,                   KC_Y         , KC_U        , KC_I        , KC_O        , KC_P        , KC_G_LBRC   ,
+        KC_G_ESC     , KC_Q        , KC_W        , KC_E        , KC_R        , KC_T        ,                   KC_Y         , KC_U        , KC_I        , KC_O        , KC_P        , KC_G_LBRC   ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_C_ENT     , KC_CS_A     , KC_GS_S     , KC_A_D      , KC_C_F      , KC_G_G      , XXXXXXX, XXXXXXX, KC_H         , KC_J        , KC_K        , KC_L        , KC_SCLN     , KC_C_MINS   ,
+        KC_C_TAB     , KC_CS_A     , KC_GS_S     , KC_A_D      , KC_C_F      , KC_G_G      , XXXXXXX, XXXXXXX, KC_H         , KC_J        , KC_K        , KC_L        , KC_SCLN     , KC_C_MINS   ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
-        KC_S_ESC     , KC_Z        , KC_X        , KC_C        , KC_V        , KC_B        , XXXXXXX, XXXXXXX, KC_N         , KC_M        , KC_COMM     , KC_DOT      , KC_SLSH     , KC_S_ESC    ,
+        KC_S_ENT     , KC_Z        , KC_X        , KC_C        , KC_V        , KC_B        , XXXXXXX, XXXXXXX, KC_N         , KC_M        , KC_COMM     , KC_DOT      , KC_SLSH     , KC_S_ENT    ,
     // .-------------+-------------+-------------+-------------+-------------+-------------.                  .-------------+-------------+-------------+-------------+-------------+-------------.
                                      TD(TD_F10)  , KC_S_EN     , KC_1_SPC    , KC_A_BS     ,                   KC_BSPC      , KC_2_ENT    , KC_S_JP     , TD(TD_HSPC)
     // ,                            -------------------------------------------------------.                  .-------------------------------------------------------.
@@ -379,7 +379,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         // レイヤー0：中段
-        case KC_C_ENT:
+        case KC_C_TAB:
         case KC_CS_A:
         case KC_GS_S:
         case KC_A_D:
@@ -401,13 +401,16 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 // キーごとにRETRO_TAPPINGを調整する
+// RETRO_TAPPING: 長押し→他キーを押さず単独で離したときに短押しを遅延発火させる救済機能
 bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        // 以下のキーのみRETRO_TAPPINGを無効化する
+        // 長押し→他キーを押さず単独で離したときに何も発生しない（false）
         case KC_1_SPC:
         case KC_2_SPC:
         case KC_2_ENT:
         case KC_A_BS:
+        case KC_C_TAB:
+        case KC_C_MINS:
             return false;
         default:
             return true;
